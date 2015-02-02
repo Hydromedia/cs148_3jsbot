@@ -181,14 +181,14 @@ function my_animate() {
 
     // CS148: INITIAL GETTING FAMILIAR CODE  (START HERE)
 
-    // keyboard is threejs helper for reading keyboard state
-    if (keyboard.pressed("x")) 
-        textbar.innerHTML = "moving up";  // make the pieces move up
-    else if (keyboard.pressed("z")) 
-        textbar.innerHTML = "zzzzzz";  // stop jittering the pieces
-    else {
-        // make the pieces jitter, and say something interesting
-    }
+    // // keyboard is threejs helper for reading keyboard state
+    // if (keyboard.pressed("x")) 
+    //     textbar.innerHTML = "moving up";  // make the pieces move up
+    // else if (keyboard.pressed("z")) 
+    //     textbar.innerHTML = "zzzzzz";  // stop jittering the pieces
+    // else {
+    //     // make the pieces jitter, and say something interesting
+    // }
 
     // jsmat will be used to transform a 3D object to a specific location in the world
     // we will represent matrices with index notation 
@@ -210,11 +210,11 @@ function my_animate() {
     // iterate over each joint of the robot independently
     for (x in robot.joints) {
 
-        // jsmat[1][3] corresponds to the y-coordinate of the position for the 3D object
-        jsmat[1][3] = 2+Math.random()*0.02;  // Math object has lots of helpful functions
+        // // jsmat[1][3] corresponds to the y-coordinate of the position for the 3D object
+        // jsmat[1][3] = 2+Math.random()*0.02;  // Math object has lots of helpful functions
 
-        // jsmat[2][3] corresponds to the z-coordinate of the position for the 3D object
-        jsmat[2][3] = Math.random()*0.02;
+        // // jsmat[2][3] corresponds to the z-coordinate of the position for the 3D object
+        // jsmat[2][3] = Math.random()*0.02;
 
         // convert 2D JavaScript array to the threejs format
         threemat = matrix_2Darray_to_threejs(jsmat); 
@@ -223,15 +223,46 @@ function my_animate() {
         simpleApplyMatrix(robot.joints[x].geom,threemat);
 
         jsmat[0][3] += spacing;
+        if (keyboard.pressed("x")) {
+        	textbar.innerHTML = "movin' on up";  // make the pieces move up
+        	jsmat[1][3] = 4;
+        }
+    	else if (keyboard.pressed("z")) {
+        	textbar.innerHTML = "zzzzzz";  // stop jittering the pieces
+        	jsmat[1][3] = 2;
+        }
+	    else {
+	    	textbar.innerHTML = "jitterbug";
+	    	jsmat[1][3] = 2+Math.random()*0.02;
+        	jsmat[2][3] = Math.random()*0.02;
+	        // make the pieces jitter, and say something interesting
+	    }
+	    // convert 2D JavaScript array to the threejs format
+	    threemat = matrix_2Darray_to_threejs(jsmat); 
+
+        // transform 
+        simpleApplyMatrix(robot.joints[x].geom,threemat);
     } 
 
     // iterate over each link of the robot independently
     jsmat[0][3] = -Object.keys(robot.joints).length*spacing/2;
     for (x in robot.links) {
-        jsmat[1][3] = 1+Math.random()*0.02;
-        jsmat[2][3] = Math.random()*0.02;
         threemat = matrix_2Darray_to_threejs(jsmat);
         simpleApplyMatrix(robot.links[x].geom,threemat);
+        if (keyboard.pressed("x")) {
+        	textbar.innerHTML = "movin' on up";  // make the pieces move up
+        	jsmat[1][3] = 3;
+        }
+    	else if (keyboard.pressed("z")) {
+        	textbar.innerHTML = "zzzzzz";  // stop jittering the pieces
+        	jsmat[1][3] = 1;
+        }
+	    else {
+	    	textbar.innerHTML = "jitterbug";
+	    	jsmat[1][3] = 1+Math.random()*0.02;
+        	jsmat[2][3] = Math.random()*0.02;
+	        // make the pieces jitter, and say something interesting
+	    }
         jsmat[0][3] += spacing;
     } 
 
