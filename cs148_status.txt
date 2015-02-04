@@ -1,5 +1,6 @@
 37: Perry Rosenberg
- Assignment 1: PENDING
+ Assignment 1: CHECK
+ comment: why is the first link positioned near the joints
  
  Assignment 2: PENDING
  
