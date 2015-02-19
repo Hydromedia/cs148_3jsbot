@@ -49,6 +49,8 @@ animate();
 
 function init() {
 
+    prevError = 0;
+
     // create pendulum and its kinematic and dynamic parameters
     pendulum = {length:2.0, mass:2.0, angle:Math.PI/2, angle_dot:0.0};
 
@@ -58,20 +60,20 @@ function init() {
     pendulum.desired_dot = 0;
 
     // initialize pendulum PID servo gains
-    pendulum.servo = {kp:0.0, kd:0.0, ki:0.0};
+    pendulum.servo = {kp:50.0, kd:30.0, ki:10.0};
     accumulated_error = 0;
 
     // set time and timestep 
     t = 0;
-    dt = 1.0;
+    dt = .05;
     
     // set gravity
-    gravity = 0.01;
+    gravity = 9.81;
 
     // set method of numerical integration of dynamics
-    numerical_integrator = "euler";  // REQUIRED
+    //numerical_integrator = "euler";  // REQUIRED
     //numerical_integrator = "verlet";  // OPTIONAL
-    //numerical_integrator = "velocity verlet";  // REQUIRED
+    numerical_integrator = "velocity verlet";  // REQUIRED
     //numerical_integrator = "runge-kutta";  // OPTIONAL
 
     init_threejs_scene();
@@ -91,12 +93,21 @@ function animate() {
     // http://learningwebgl.com/blog/?p=3189
     requestAnimationFrame( animate );
 
+    //Doing PID
+    var currentError = pendulum.desired - pendulum.angle;
+    accumulated_error += currentError * dt;
+    var errorChange = (currentError - prevError) / dt;
+    pendulum.control = pendulum.servo.kp * currentError + pendulum.servo.ki
+     * accumulated_error + pendulum.servo.kd * errorChange;
+     //console.log(pendulum.control);
+    prevError = currentError;
+
 
     // key inputs for adding force to pendulum motor
     if ( keyboard.pressed("d") )
-        pendulum.control += 0.05;
+        pendulum.control += 5;
     else if ( keyboard.pressed("a") )
-        pendulum.control += -0.05;
+        pendulum.control += -5;
 
     // key inputs for setting desired angle for pendulum servo
     if ( keyboard.pressed("e") )
@@ -108,30 +119,42 @@ function animate() {
     if ( keyboard.pressed("s") )
         pendulum.control = 0;
 
+
     // update pendulum state with integrator using current acceleration
     if (numerical_integrator === "verlet") {
         // basic verlet integration
     }
     else if (numerical_integrator === "velocity verlet") {
         // velocity version of verlet integration
+        var torque = pendulum.control;
+        var acc = ( 0 - (gravity/pendulum.length)*Math.sin(pendulum.angle)) + torque/(pendulum.mass*pendulum.length*pendulum.length);
+        pendulum.angle = pendulum.angle + pendulum.angle_dot*dt+(.5)*acc*dt*dt;
+        var acc2 = ( 0 - (gravity/pendulum.length)*Math.sin(pendulum.angle)) + torque/(pendulum.mass*pendulum.length*pendulum.length);
+        pendulum.angle_dot = pendulum.angle_dot + (acc + acc2)*(dt/2);
     }
     else if (numerical_integrator === "runge-kutta") {
         // RK4, fourth-order Runge-Kutta integration
     } 
     else {
         // euler integration
-
         numerical_integrator = "euler";
+        var torque = pendulum.control;
+        //Using the Parallel Axis Theorem
+        var acc = ( 0 - (gravity/pendulum.length)*Math.sin(pendulum.angle)) + torque/(pendulum.mass*pendulum.length*pendulum.length);
+        pendulum.angle = pendulum.angle + pendulum.angle_dot;
+        pendulum.angle_dot = pendulum.angle_dot + acc;
     }
 
     // set the current state/angle of the pendulum
     pendulum.geom.rotation.y = pendulum.angle;  // threejs cylinders have their axes along the y-axis
-    pendulum.angle += Math.PI/160;  // REMOVE THIS!!! just to show how angle is ued
+    //pendulum.angle += Math.PI/160;  // REMOVE THIS!!! just to show how angle is ued
+
 
     // don't forget to advance time
+    t+=dt;
 
     /* output simulator variables
-    textbar.innerHTML = 
+    */textbar.innerHTML = 
         " t = " + t.toFixed(2) + 
         " dt = " + dt.toFixed(2) + 
         " x = " + pendulum.angle.toFixed(2) + 
@@ -142,7 +165,7 @@ function animate() {
         " l = " + pendulum.length.toFixed(2) +
         " integrator = " + numerical_integrator
     ;
-    */
+    
 
     // threejs rendering update
     renderer.render( scene, camera );
