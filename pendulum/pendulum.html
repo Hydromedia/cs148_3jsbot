@@ -71,9 +71,9 @@ function init() {
     gravity = 9.81;
 
     // set method of numerical integration of dynamics
-    //numerical_integrator = "euler";  // REQUIRED
+    numerical_integrator = "euler";  // REQUIRED
     //numerical_integrator = "verlet";  // OPTIONAL
-    numerical_integrator = "velocity verlet";  // REQUIRED
+    //numerical_integrator = "velocity verlet";  // REQUIRED
     //numerical_integrator = "runge-kutta";  // OPTIONAL
 
     init_threejs_scene();
@@ -116,8 +116,10 @@ function animate() {
         pendulum.desired += -0.05;
 
     // key input to zero controls and let pendulum swing
-    if ( keyboard.pressed("s") )
+    if ( keyboard.pressed("s") ){
         pendulum.control = 0;
+        accumulated_error = 0;
+    }
 
 
     // update pendulum state with integrator using current acceleration
@@ -141,8 +143,8 @@ function animate() {
         var torque = pendulum.control;
         //Using the Parallel Axis Theorem
         var acc = ( 0 - (gravity/pendulum.length)*Math.sin(pendulum.angle)) + torque/(pendulum.mass*pendulum.length*pendulum.length);
-        pendulum.angle = pendulum.angle + pendulum.angle_dot;
-        pendulum.angle_dot = pendulum.angle_dot + acc;
+        pendulum.angle = pendulum.angle + pendulum.angle_dot*dt;
+        pendulum.angle_dot = pendulum.angle_dot + acc*dt;
     }
 
     // set the current state/angle of the pendulum
