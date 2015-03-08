@@ -1,9 +1,15 @@
 37: Perry Rosenberg
- Assignment 1: PENDING
  
- Assignment 2: PENDING
+ Assignment 1: CHECK
+ comment: why is the first link positioned near the joints
  
- Assignment 3: PENDING
+ Assignment 2: DUE
+ error: euler integrator is incorrect
+ comment: pendulum motion for euler integration is faster than expected
+ warning: accumulated error needs to be zero when motor is inactive
+ comment: servo understiff?
+ 
+ Assignment 3: CANCELLED
  
  Assignment 4: PENDING
  

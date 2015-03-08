@@ -42,18 +42,19 @@
  
 <!-- 3jsbot includes -->
 <script src="3jsbot.js"></script> 
-<!--
+
 <script src="3jsbot_forward_kinematics.js"></script> 
+<script src="3jsbot_matrix.js"></script> 
+<!--
 <script src="3jsbot_controls.js"></script> 
 <script src="3jsbot_pd_control.js"></script> 
 <script src="3jsbot_inverse_kinematics.js"></script> 
 <script src="3jsbot_potential_field.js"></script> 
 <script src="3jsbot_rrt_connect.js"></script> 
-<script src="3jsbot_matrix.js"></script> 
 <script src="3jsbot_quaternion.js"></script> 
--->
 <script src="3jsbot_threejs.js"></script> 
 <script src="3jsbot_userinput.js"></script> 
+-->
 
 <script>
 
@@ -164,6 +165,8 @@ function init_robot_joints() {
         console.log(robot.joints[x].child); // to print the child link of joints for example
 
         // CONSTRUCT KINEMATIC HIERARCHY
+        robot.links[robots.joints[x].parent].child = robot.joints[x].name;
+        robot.links[robots.joints[x].child].parent = robot.joints[x].name;
     }
 
     // CS148: do not remove, this is used to create threejs geometries
@@ -278,7 +281,7 @@ function my_animate() {
     // DRAW ROBOT 
 
     // forward kinematics over robot links
-    //robot_forward_kinematics();
+    robot_forward_kinematics();
 
     // HANDLE USER CONTROLS
 
