@@ -60,7 +60,7 @@ function init() {
     pendulum.desired_dot = 0;
 
     // initialize pendulum PID servo gains
-    pendulum.servo = {kp:50.0, kd:30.0, ki:10.0};
+    pendulum.servo = {kp:70.0, kd:50.0, ki:10.0};
     accumulated_error = 0;
 
     // set time and timestep 
@@ -71,9 +71,9 @@ function init() {
     gravity = 9.81;
 
     // set method of numerical integration of dynamics
-    numerical_integrator = "euler";  // REQUIRED
+    //numerical_integrator = "euler";  // REQUIRED
     //numerical_integrator = "verlet";  // OPTIONAL
-    //numerical_integrator = "velocity verlet";  // REQUIRED
+    numerical_integrator = "velocity verlet";  // REQUIRED
     //numerical_integrator = "runge-kutta";  // OPTIONAL
 
     init_threejs_scene();
