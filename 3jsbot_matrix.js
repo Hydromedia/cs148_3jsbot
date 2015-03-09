@@ -66,22 +66,22 @@ function matrix_transpose (A) {
 
 function vector_normalize (A) {
 
+	var B = Array(A.length);
+	var total = 0;
 	for (i = 0; i < A.length; i++) {
-
+		total += A[i]*A[i];
 	}
-	var x = A[0];
-	var y = A[1];
-	var z = A[2];
-
-	var length_squared = x*x + y*y + z*z;
-	var length = Math.sqrt(length_square);
-	var B = [x/length, y/length, z/length];
+	var length_squared = total;
+	var length = Math.sqrt(length_squared);
+	for (i = 0; i < B.length; i++) {
+		B[i]= A[i]/length;
+	}
 	return B;
 }
 
 function vector_cross (A, B) {
-	A
-	y * vec.z - z * vec.y, z * vec.x - x * vec.z, x * vec.y - y * vec.x;
+	var C = [A[1] * B[2] - A[1] * B[1], A[2] * B[0] - A[0] * B[2], A[0] * B[1] - A[1] * B[0]];
+	return C;
 }
 
 function generate_identity(size) {
@@ -99,18 +99,38 @@ function generate_identity(size) {
 	return resultMatrix;
 }
 
-function generate_translation_matrix () {
-	
+function generate_translation_matrix (A) {
+	var I = generate_identity(4);
+	Math.
+	I[0][3] = A[0];
+	I[1][3] = A[1];
+	I[2][3] = A[2];
+	return I;
 }
 
-function generate_rotation_matrix_X () {
-	
+function generate_rotation_matrix_X (theta) {
+	var I = generate_identity(4);
+	I[1][1] = Math.cos(theta);
+	I[1][2] = 0 - Math.sin(theta);
+	I[2][1] = Math.sin(theta);
+	I[2][2] = Math.cos(theta);
+	return I;
 }
 
-function generate_rotation_matrix_Y () {
-	
+function generate_rotation_matrix_Y (theta) {
+	var I = generate_identity(4);
+	I[0][0] = Math.cos(theta);
+	I[0][2] = Math.sin(theta);
+	I[2][0] = 0 - Math.sin(theta);
+	I[2][2] = Math.cos(theta);
+	return I;
 }
 
-function generate_rotation_matrix_Z () {
-	
+function generate_rotation_matrix_Z (theta) {
+	var I = generate_identity(4);
+	I[0][0] = Math.cos(theta);
+	I[0][1] = 0 - Math.sin(theta);
+	I[1][0] = Math.sin(theta);
+	I[1][1] = Math.cos(theta);
+	return I;
 }

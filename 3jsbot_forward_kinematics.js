@@ -19,3 +19,18 @@ compute_and_draw_heading
 */
 
 
+function robot_forward_kinematics () {
+
+}
+
+function traverse_forward_kinematics_link () {
+	
+}
+
+function traverse_forward_kinematics_joint () {
+	
+}
+
+function compute_and_draw_heading () {
+	
+}
