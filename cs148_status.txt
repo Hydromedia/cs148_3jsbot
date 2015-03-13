@@ -8,6 +8,7 @@
  comment: pendulum motion for euler integration is faster than expected
  warning: accumulated error needs to be zero when motor is inactive
  comment: servo understiff?
+ regrade: working
  
  Assignment 3: CANCELLED
  
