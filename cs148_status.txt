@@ -3,7 +3,7 @@
  Assignment 1: CHECK
  comment: why is the first link positioned near the joints
  
- Assignment 2: DUE
+ Assignment 2: CHECK
  error: euler integrator is incorrect
  comment: pendulum motion for euler integration is faster than expected
  warning: accumulated error needs to be zero when motor is inactive
