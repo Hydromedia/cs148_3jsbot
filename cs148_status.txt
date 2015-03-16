@@ -12,7 +12,9 @@
  
  Assignment 3: CANCELLED
  
- Assignment 4: PENDING
+ Assignment 4: DUE
+ error: robot does not display properly for all test cases
+ console: TypeError: robot.links[robot.joints[p].parent].children is undefined
  
  Assignment 5: PENDING
  
