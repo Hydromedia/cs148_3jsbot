@@ -5,6 +5,9 @@
 
 //CS148: reference code has functions for:
 
+
+
+
 function matrix_multiply (A, B) {
 	var resultMatrix = [],
 		resultWidth = B[0].length;
@@ -23,14 +26,17 @@ function matrix_multiply (A, B) {
 }
 
 var A = [[1, 2, 3, 4],
-		 [1, 2, 3, 4]];
+		[5, 6, 7, 8],
+		[9, 9, 11, 12],
+		[24, 25, 46, 75]];
 
-var B = [[1, 2, 3],
-		 [4, 5, 6],
-		 [7, 8, 9],
-		 [10, 11, 12]];
-
-var C = matrix_transpose(B);
+var B = [[1, 2, 3, 4],
+		[5, 6, 7, 8],
+		[9, 9, 11, 12],
+		[24, 25, 46, 75]];
+//console.log(matrix_multiply(A, B));
+var C = matrix_multiply(A, B);
+console.log(C);
 function print_array (C) {
 	for (i = 0; i < A.length; i++) {
 		for (j = 0; j < A[0].length; j++) {
@@ -86,9 +92,9 @@ function vector_cross (A, B) {
 
 function generate_identity(size) {
 	var resultMatrix = new Array(size);
-	for (i = 0; i < height; i++) {
+	for (i = 0; i < size; i++) {
 		resultMatrix[i] = new Array(size);
-		for (j = 0; j < width; j++) {
+		for (j = 0; j < size; j++) {
 			if (i == j){
 				resultMatrix[i][j] = 1;
 			} else {
@@ -101,12 +107,16 @@ function generate_identity(size) {
 
 function generate_translation_matrix (A) {
 	var I = generate_identity(4);
-	Math.
+	//Math.
 	I[0][3] = A[0];
 	I[1][3] = A[1];
 	I[2][3] = A[2];
 	return I;
 }
+
+var A = [5, 6, 7];
+console.log("test:");
+console.log(generate_translation_matrix(A));
 
 function generate_rotation_matrix_X (theta) {
 	var I = generate_identity(4);

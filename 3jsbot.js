@@ -62,7 +62,7 @@ function init() {
     keyboard = new THREEx.KeyboardState();
 
     // create events and handlers for interaction controls
-    //init_keyboard_events();
+    init_keyboard_events();
     update_ik = false;
     update_pd = false;
 
@@ -115,10 +115,10 @@ function init() {
     // initialize the active link/joint for control
     active_link = robot.base;
     active_joint = robot.links[active_link].children[0];
-    //robot.links[active_link].geom.material.wireframe = false; 
-    //robot.links[active_link].geom.material.opacity = 0.5; 
-    robot.joints[active_joint].display_geom.material.wireframe = false; 
-    robot.joints[active_joint].display_geom.material.opacity = 0.5; 
+    //robot.links[active_link].geom.material.wireframe = false;
+    //robot.links[active_link].geom.material.opacity = 0.5;
+    robot.joints[active_joint].display_geom.material.wireframe = false;
+    robot.joints[active_joint].display_geom.material.opacity = 1;
     
 
     // !!! change this to scale geometries or scale view

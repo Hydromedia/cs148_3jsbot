@@ -24,42 +24,33 @@ compute_and_draw_heading
 // robot.joints[xx].xform: transform resulting from joint rotation in global coordinates.
 
 function robot_forward_kinematics (robot) {
-	if (robot.joints !== null && robot.joints[0] !== null){
-		var joint = robot.joints[0];
-		var old_transform = matrix_multiply(matrix_multiply(matrix_multiply(generate_translation_matrix(joint.xyz), generate_rotation_matrix_X(joint.rpy[0])),
-						generate_rotation_matrix_Y(joint.rpy[1])), 
-						generate_rotation_matrix_Z(joint.rpy[2]));
+	var old_transform = matrix_multiply(matrix_multiply(matrix_multiply(generate_translation_matrix(robot.origin.xyz), generate_rotation_matrix_X(robot.origin.rpy[0])),
+					generate_rotation_matrix_Y(robot.origin.rpy[1])), 
+	 				generate_rotation_matrix_Z(robot.origin.rpy[2]));
 
-		robot.origin.xform = old_transform;
-
-		traverse_forward_kinematics_joint(robot, robot.joints[0]);
-	}
+	traverse_forward_kinematics_link(robot, old_transform, robot.base);
 }
 
 function traverse_forward_kinematics_link (robot, current_transform, link) {
     robot.links[link].xform = current_transform;
-	for (x in robot.links[link].children) {
-		if (x !== null && robot.joints[x] !== null){
-			traverse_forward_kinematics_link(robot, current_transform, x);
+		var length = robot.links[link].children.length;
+		for (var i = 0; i < length; i++) {
+			traverse_forward_kinematics_joint(robot, current_transform, robot.links[link].children[i]);
 		}
-	}
 
 }
 
 function traverse_forward_kinematics_joint (robot, current_transform, joint) {
-	
-	var old_transform = matrix_multiply(matrix_multiply(matrix_multiply(generate_translation_matrix(joint.xyz), generate_rotation_matrix_X(joint.rpy[0])),
-						generate_rotation_matrix_Y(joint.rpy[1])), 
-						generate_rotation_matrix_Z(joint.rpy[2]));
+	var new_transform = matrix_multiply(matrix_multiply(matrix_multiply(generate_translation_matrix(robot.joints[joint].origin.xyz), generate_rotation_matrix_X(robot.joints[joint].origin.rpy[0])),
+						generate_rotation_matrix_Y(robot.joints[joint].origin.rpy[1])), 
+						generate_rotation_matrix_Z(robot.joints[joint].origin.rpy[2]));
 
-	joint.transform = matrix_multiply(current_transform, old_transform);
+	var transform = matrix_multiply(current_transform, new_transform);
 
-	robot.joints[xx].origin.xform = matrix_multiply(current_transform, old_transform);
-    robot.joints[xx].xform = matrix_multiply(current_transform, old_transform);
+	robot.joints[joint].origin.xform = transform;
+    robot.joints[joint].xform = transform;
 
-	if (joint.child !== null && robot.links[joint.child] !== null){
-		traverse_forward_kinematics_link(robot, joint.transform, robot.links[joint.child]);
-	}
+	traverse_forward_kinematics_link(robot, transform, robot.links[robot.joints[joint].child].name);
 }
 
 function compute_and_draw_heading () {

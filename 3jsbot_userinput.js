@@ -14,27 +14,28 @@ RF - move IK target position up/down
 
 /* CS148: user input for selecting joints */
 function init_keyboard_events() {
+    console.log("Keyboard Event Listener Added");
     document.addEventListener('keydown', function(e) {handle_keydown(e.keyCode); }, true);
 }
 
 function handle_keydown(keycode) {
-    //console.log("handle_keydown: "+keycode);
+    console.log("handle_keydown: "+keycode);
     switch (keycode) { // h:72 j:74 k:75 l:76
     case 74: // j 
         change_active_link_down();
-        //console.log("change_active_link_down");
+        console.log("change_active_link_down");
         break;
     case 75: // k
         change_active_link_up();
-        //console.log("change_active_link_up");
+        console.log("change_active_link_up");
         break;
     case 76: // l
         change_active_joint_next();
-        //console.log("change_active_joint_next");
+        console.log("change_active_joint_next");
         break;
     case 72: // h
         change_active_joint_previous();
-        //console.log("change_active_joint_previous");
+        console.log("change_active_joint_previous");
         break;
     }
 }
@@ -101,7 +102,7 @@ function user_input() {
 /* CS148: user input for joint selection */
 
 function change_active_link_down() {
-    if (typeof robot.links[robot.joints[active_joint].child].children !== 'undefined') {
+    if (robot.links[robot.joints[active_joint].child].children.length !== 0) {
         robot.joints[active_joint].display_geom.material.opacity = 1.0; 
 
         active_link = robot.joints[active_joint].child;
