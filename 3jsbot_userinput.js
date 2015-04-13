@@ -51,7 +51,7 @@ function user_input() {
         robot.joints[active_joint].control += -0.01;  // add motion increment 
     }
 
-    /* CS148: user input for base movement
+     //CS148: user input for base movement
     // move robot base in the ground plane
     if ( keyboard.pressed("a") ) {  // turn
         robot.control.rpy[1] += 0.1;

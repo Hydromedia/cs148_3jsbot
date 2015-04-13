@@ -82,6 +82,7 @@ function my_init() {
 
     var local_spacing = 0.9;  // variables declared with "var" are local 
     global_spacing = 0.9;  // variables declared with "var" are global
+    DOF = 0;
 
     my_object = {};  // objects can be created with braces
     my_object.university = "Brown";  // create object property with an assignment
@@ -170,6 +171,10 @@ function init_robot_joints() {
 
         // give the joint its name as an id
         robot.joints[x].name = x;
+        robot.joints[x].angle = 0;
+        robot.joints[x].control = 0;
+        robot.joints[x].servo = 0;
+        robot.joints[x].desired = 0;
         robot.links[robot.joints[x].parent].children.push(x);
         robot.links[robot.joints[x].child].parent = x;
         //console.log(robot.joints[x].child); // to print the child link of joints for example
@@ -305,7 +310,7 @@ function my_animate() {
     // ROBOT DYNAMICS 
 
     // apply robot controls to robot configuration (assuming pure kinematics for now)
-    //robot_apply_controls();
+    robot_apply_controls();
 
     // DRAW ROBOT 
 
@@ -334,11 +339,11 @@ function my_animate() {
     // UPDATE AUTONOMOUS CONTROLS 
 
     // proportional-derivative control 
-    /*
+    
     if (update_pd)
         robot_pd_control();
     update_pd = false;
-    */
+    
 
     // inverse kinematics
     //robot_inverse_kinematics(ik_target, "forearm_right_yaw", ik_local);

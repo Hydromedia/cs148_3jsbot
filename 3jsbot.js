@@ -183,16 +183,16 @@ function init_robot_joints_geoms() {
             
         // CS148: uncomment this if you have vector_cross implemented
         // (need to find better factoring)
-        /*
+        
         // if joint axis not aligned with y-axis, rotate 3js cylinder axis to align with y
         if (!((robot.joints[x].axis[0] == 0) && (robot.joints[x].axis[2] == 0))) {
-            var tempaxis = vector_cross(robot.joints[x].axis,[0,-1,0]);
+            var tempaxis = vector_normalize(vector_cross(robot.joints[x].axis,[0,-1,0]));
             var temp3axis = new THREE.Vector3(tempaxis[0],tempaxis[1],tempaxis[2]);
             // baked in dot product given cylinder axis is normal along y-axis
             var tempangle = Math.acos(robot.joints[x].axis[1]);
             robot.joints[x].display_geom.rotateOnAxis(temp3axis,tempangle);
         }
-        */
+        
         scene.add(robot.joints[x].geom);
         robot.joints[x].geom.add(robot.joints[x].display_geom);
 
