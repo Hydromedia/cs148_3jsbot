@@ -3,15 +3,18 @@
  Assignment 1: CHECK
  comment: why is the first link positioned near the joints
  
- Assignment 2: DUE
+ Assignment 2: CHECK
  error: euler integrator is incorrect
  comment: pendulum motion for euler integration is faster than expected
  warning: accumulated error needs to be zero when motor is inactive
  comment: servo understiff?
+ regrade: working
  
  Assignment 3: CANCELLED
  
- Assignment 4: PENDING
+ Assignment 4: DUE
+ error: robot does not display properly for all test cases
+ console: TypeError: robot.links[robot.joints[p].parent].children is undefined
  
  Assignment 5: PENDING
  
