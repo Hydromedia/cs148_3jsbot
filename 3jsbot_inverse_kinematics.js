@@ -13,7 +13,7 @@ iterate_inverse_kinematics
 */
 
 function update_joint_angles (angles, joint, index) {
-	robot.joints[joint].control += .1*(angles[index][0]);
+	robot.joints[joint].control +=.1*(angles[index][0]);
 	//console.log("Update Angles: " + angles[index][0]);
 	//console.log("Update Angles: " + angles[index][0]);
 	index+=1;
@@ -50,7 +50,8 @@ function robot_inverse_kinematics(target_pos, endeffector_joint, endeffector_loc
 		abcd = matrix_multiply(robot.joints[endeffector_joint].xform, vec4_endeffector_local_pos);
 		//console.log("ABCD!@#!#@!");
 		//console.log(abcd);
-        iterate_inverse_kinematics(jacobian, target_pos, endeffector_joint, endeffector_local_pos);
+		var new_end = matrix_multiply(robot.joints[endeffector_joint].xform, vec4_endeffector_local_pos);
+        iterate_inverse_kinematics(jacobian, target_pos, endeffector_joint, new_end);
         //console.log("iterate end");
     	//jacobian = jacobian.splice(0, 1);
         var transpose = false;
@@ -71,16 +72,16 @@ function robot_inverse_kinematics(target_pos, endeffector_joint, endeffector_loc
 	    	var angles = matrix_multiply(forward_jacobian_Nx3, delta);
 	    	//console.log("Final angles");
 	    	//console.log(angles);
-	    	console.log(angles.length);
+	    	//console.log(angles.length);
 	    	//console.log(jacobian);
 	    	update_joint_angles(angles, endeffector_joint, 0);
     	} else {
     		var A = jacobian;
     		var At = matrix_transpose(jacobian);
     		var pseudo_inv = matrix_multiply(numeric.inv(matrix_multiply(At,A)), At);
-			console.log("JJ!!");
+			//console.log("JJ!!");
     		//console.log(matrix_transpose(jacobian));
-    		console.log(pseudo_inv);
+    		//console.log(pseudo_inv);
     		var forward_jacobian_Nx3 = generate_empty(pseudo_inv.length,3);
 	        for(var i=0; i< pseudo_inv.length;i++){
 		        forward_jacobian_Nx3[i][0]=pseudo_inv[i][0];
@@ -96,7 +97,7 @@ function robot_inverse_kinematics(target_pos, endeffector_joint, endeffector_loc
 	    	var angles = matrix_multiply(forward_jacobian_Nx3, delta);
 	    	//console.log("Final angles");
 	    	//console.log(angles);
-	    	console.log(angles.length);
+	    	//console.log(angles.length);
 	    	//console.log(jacobian);
 	    	update_joint_angles(angles, endeffector_joint, 0);
     	}
@@ -128,6 +129,7 @@ function iterate_inverse_kinematics(jacobian, target_pos, joint, endeffector_loc
 	It takes tree to tango.: is like axis cross (endeffector location- joint location)
 	*/
 
+	//is this in world space??
 	var axis = generate_empty(4, 1);
 	axis[0][0] = robot.joints[joint].axis[0];
 	axis[1][0] = robot.joints[joint].axis[1];
@@ -145,22 +147,22 @@ function iterate_inverse_kinematics(jacobian, target_pos, joint, endeffector_loc
 	axis = matrix_multiply(rotation_matrix, axis);
 
 
-	var vec4_endeffector_local_pos = generate_empty(4,1);
-	vec4_endeffector_local_pos[0][0] = endeffector_local_pos[0][0];
-	vec4_endeffector_local_pos[1][0] = endeffector_local_pos[1][0];
-	vec4_endeffector_local_pos[2][0] = endeffector_local_pos[2][0];
-	vec4_endeffector_local_pos[3][0] = 1;
+	// var vec4_endeffector_local_pos = generate_empty(4,1);
+	// vec4_endeffector_local_pos[0][0] = endeffector_local_pos[0][0];
+	// vec4_endeffector_local_pos[1][0] = endeffector_local_pos[1][0];
+	// vec4_endeffector_local_pos[2][0] = endeffector_local_pos[2][0];
+	// vec4_endeffector_local_pos[3][0] = 1;
 
-	//console.log("angle");
-	//console.log(robot.joints[joint].angle);
+	// console.log("angle");
+	// console.log(robot.joints[joint].angle);
 
 	// console.log("robot.joints[joint].xform");
 	// console.log(robot.joints[joint].xform);
 	// console.log("vec4_endeffector_local_pos");
 	// console.log(vec4_endeffector_local_pos);
-	var endeffector_world_coordinate = matrix_multiply(robot.joints[joint].xform, vec4_endeffector_local_pos);
-	// console.log("endeffector_world_coordinate");
-	// console.log(endeffector_world_coordinate);
+	var endeffector_world_coordinate = endeffector_local_pos;//matrix_multiply(robot.joints[joint].xform, vec4_endeffector_local_pos);
+	//console.log("endeffector_world_coordinate");
+	//console.log(endeffector_world_coordinate);
 
 	// endeffector_world_position = generate_empty(1,3);
 	// endeffector_world_position[0][0] = endeffector_world_coordinate[0][0];
@@ -169,14 +171,14 @@ function iterate_inverse_kinematics(jacobian, target_pos, joint, endeffector_loc
 	//endeffector_world_position[0][3] = 1;
 
 	var joint_world_position = generate_empty(1,3);
-	joint_world_position[0][0] = robot.joints[joint].origin.xform[0][3];
-	joint_world_position[0][1] = robot.joints[joint].origin.xform[1][3];
-	joint_world_position[0][2] = robot.joints[joint].origin.xform[2][3];
+	joint_world_position[0][0] = robot.joints[joint].xform[0][3];
+	joint_world_position[0][1] = robot.joints[joint].xform[1][3];
+	joint_world_position[0][2] = robot.joints[joint].xform[2][3];
 	//joint_world_position[0][3] = 1;
 
-	var delta = [endeffector_world_coordinate[0][0] - joint_world_position[0][0],
-				 endeffector_world_coordinate[1][0] - joint_world_position[0][1],
-				 endeffector_world_coordinate[2][0] - joint_world_position[0][2]];
+	var delta = [joint_world_position[0][0] - endeffector_world_coordinate[0][0],
+				 joint_world_position[0][1] - endeffector_world_coordinate[1][0],
+				 joint_world_position[0][2] - endeffector_world_coordinate[2][0]];
 
 	//console.log("delta");
 	//console.log(delta);
