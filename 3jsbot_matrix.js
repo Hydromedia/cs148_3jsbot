@@ -28,7 +28,8 @@ function matrix_multiply (A, B) {
 var A = [[1, 2, 3, 4],
 		[5, 6, 7, 8],
 		[9, 9, 11, 12],
-		[24, 25, 46, 75]];
+		[24, 25, 46, 75],
+		[10,9,8,7]];
 
 var B = [[1, 2, 3, 4],
 		[5, 6, 7, 8],
@@ -45,7 +46,8 @@ function print_array (C) {
 	}
 }
 
-
+console.log("Empty Test");
+console.log(generate_empty(4, 6));
 function generate_empty(height, width){
 	var resultMatrix = new Array(height);
 	for (i = 0; i < height; i++) {
@@ -57,13 +59,20 @@ function generate_empty(height, width){
 	return resultMatrix;
 }
 
+var D = [[1, 2, 3, 4],
+		[5, 6, 7, 8],
+		[9, 9, 11, 12],
+		[24, 25, 46, 75],
+		[10,9,8,7]];
+console.log("Transpose Test:");
+console.log(matrix_transpose(D));
 function matrix_transpose (A) {
 	var resultMatrix = [];
-		width = A[0].length;
-		height = A.length;
-	resultMatrix = generate_empty(height, width);
-	for (i = 0; i < height; i++) {
-		for (j = 0; j < width; j++) {
+		oldCols = A[0].length;
+		oldRows = A.length;
+	resultMatrix = generate_empty(oldCols, oldRows);
+	for (i = 0; i < oldRows; i++) {
+		for (j = 0; j < oldCols; j++) {
 			resultMatrix[j][i] = A[i][j];
 		}
 	}

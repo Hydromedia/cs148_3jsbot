@@ -16,8 +16,9 @@ function update_joint_angles (angles, joint, index) {
 	robot.joints[joint].control += .1*(angles[index][0]);
 	//console.log("Update Angles: " + angles[index][0]);
 	//console.log("Update Angles: " + angles[index][0]);
-	if (index < angles.length - 2){
-		update_joint_angles(angles, robot.joints[robot.links[robot.joints[joint].parent].parent].name, index+1);
+	index+=1;
+	if (index < angles.length){
+		update_joint_angles(angles, robot.joints[robot.links[robot.joints[joint].parent].parent].name, index);
 	}
 }
 
@@ -70,18 +71,21 @@ function robot_inverse_kinematics(target_pos, endeffector_joint, endeffector_loc
 	    	var angles = matrix_multiply(forward_jacobian_Nx3, delta);
 	    	//console.log("Final angles");
 	    	//console.log(angles);
-	    	//console.log(angles.length);
+	    	console.log(angles.length);
 	    	//console.log(jacobian);
 	    	update_joint_angles(angles, endeffector_joint, 0);
     	} else {
-    		var pseudo_inv = matrix_multiply(numeric.inv(matrix_multiply(matrix_transpose(jacobian),jacobian)), matrix_transpose(jacobian));
+    		var A = jacobian;
+    		var At = matrix_transpose(jacobian);
+    		var pseudo_inv = matrix_multiply(numeric.inv(matrix_multiply(At,A)), At);
+			console.log("JJ!!");
+    		//console.log(matrix_transpose(jacobian));
     		console.log(pseudo_inv);
-    		var forward_jacobian_Nx3 = generate_empty(jacobian[0].length,3);
-	        for(var i=0; i< jacobian[0].length;i++){
-		        var size=jacobian[0].length;
-		        forward_jacobian_Nx3[i][0]=pseudo_inv[0][i];
-		        forward_jacobian_Nx3[i][1]=pseudo_inv[1][i];
-		        forward_jacobian_Nx3[i][2]=pseudo_inv[2][i];
+    		var forward_jacobian_Nx3 = generate_empty(pseudo_inv.length,3);
+	        for(var i=0; i< pseudo_inv.length;i++){
+		        forward_jacobian_Nx3[i][0]=pseudo_inv[i][0];
+		        forward_jacobian_Nx3[i][1]=pseudo_inv[i][1];
+		        forward_jacobian_Nx3[i][2]=pseudo_inv[i][2];
 	    	}
 	    	//console.log(forward_jacobian_3N);
 	    	//console.log(forward_jacobian_3N.length);
@@ -92,7 +96,7 @@ function robot_inverse_kinematics(target_pos, endeffector_joint, endeffector_loc
 	    	var angles = matrix_multiply(forward_jacobian_Nx3, delta);
 	    	//console.log("Final angles");
 	    	//console.log(angles);
-	    	//console.log(angles.length);
+	    	console.log(angles.length);
 	    	//console.log(jacobian);
 	    	update_joint_angles(angles, endeffector_joint, 0);
     	}
