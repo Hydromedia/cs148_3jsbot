@@ -96,6 +96,18 @@ function user_input() {
         ik_target[1][0] += 0.01;
     if ( keyboard.pressed("f") )  // ik target down
         ik_target[1][0] -= 0.01;
+
+    /* CS148: user input for moving IK target left/right */
+    if ( keyboard.pressed("t") )   // ik target right
+        ik_target[0][0] += 0.01;
+    if ( keyboard.pressed("g") )  // ik target left
+        ik_target[0][0] -= 0.01;
+
+    /* CS148: user input for moving IK target left/right */
+    if ( keyboard.pressed("y") )   // ik target right
+        ik_target[2][0] += 0.01;
+    if ( keyboard.pressed("h") )  // ik target left
+        ik_target[2][0] -= 0.01;
 }
 
 
