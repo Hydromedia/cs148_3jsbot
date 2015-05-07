@@ -63,7 +63,8 @@ function compute_and_draw_heading () {
 
 	var head = matrix_multiply(new_transform, generate_translation_matrix([0,0,1]));
 	var lat = matrix_multiply(new_transform, generate_translation_matrix([1,0,0]));
-
+	//console.log("HEAD");
+	//console.log(head);
 
 	robot_heading = [[head[0][3]], [head[1][3]], [head[2][3]]];
 	robot_lateral = [[lat[0][3]], [lat[1][3]], [lat[2][3]]];

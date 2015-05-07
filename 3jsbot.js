@@ -63,7 +63,7 @@ function init() {
 
     // create events and handlers for interaction controls
     init_keyboard_events();
-    update_ik = false;
+    update_ik = true;
     update_pd = false;
 
     display_map = true;

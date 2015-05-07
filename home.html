@@ -36,10 +36,13 @@
 <!-- CS148: change this script pointer to change the robot definition -->
 
 <script src="robots/robot_br2.js"></script> 
+
 <!--
 <script src="robots/robot_urdf_example.js"></script> 
 <script src="robots/robot_crawler.js"></script> 
 <script src="robots/robot_br2.js"></script> 
+
+<script src="3jsbot_potential_field.js"></script> 
 -->
  
 <!-- 3jsbot includes -->
@@ -51,7 +54,6 @@
 <script src="3jsbot_controls.js"></script> 
 <script src="3jsbot_pd_control.js"></script> 
 <script src="3jsbot_inverse_kinematics.js"></script> 
-<script src="3jsbot_potential_field.js"></script> 
 <script src="3jsbot_rrt_connect.js"></script> 
 <script src="3jsbot_quaternion.js"></script> 
 <script src="3jsbot_threejs.js"></script> 
@@ -89,7 +91,7 @@ function my_init() {
     my_object.course_number = 148;  
     my_object["subject"] = "robotics";  
     if (typeof copied_object === 'undefined') {  // if my_object does not already exist
-        console.log(my_object);  // check it out on the console  
+        //console.log(my_object);  // check it out on the console  
     }
 
     // objects are copied by reference
@@ -100,7 +102,7 @@ function my_init() {
     my_array[6] = 'ni-i-i-ine';
     var i;  // local variable
     for (i=0;i<my_array.length;i++) {
-        console.log(my_array[i]);
+        //console.log(my_array[i]);
     }
 
     textbar = document.createElement('div');
@@ -164,7 +166,7 @@ function init_robot_joints() {
         robot.links[d].name = d;
         robot.links[d].children = [];
         // robot.links[d].children.push("three");
-        console.log("added");
+        //console.log("added");
     }
     var x,tempmat;
     for (x in robot.joints) {
@@ -346,7 +348,7 @@ function my_animate() {
     
 
     // inverse kinematics
-    //robot_inverse_kinematics(ik_target, "forearm_right_yaw", ik_local);
+    robot_inverse_kinematics(ik_target, "forearm_right_yaw", [[0],[0],[0.5],[1]]);
 
     // configuration space motion planning
     //robot_rrt_connect(q_desired);
