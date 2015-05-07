@@ -42,6 +42,13 @@ function handle_keydown(keycode) {
 
 function user_input() {
 
+    // generate motion plan
+    if ( keyboard.pressed("m") )
+        generate_motion_plan = true;
+    else
+        generate_motion_plan = false;
+
+    
     /* CS148: user input for controlling joints */ 
     // incrment/decrement angle of active joint 
     if ( keyboard.pressed("u") ) {

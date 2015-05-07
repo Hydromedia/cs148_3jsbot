@@ -54,10 +54,19 @@
 <script src="3jsbot_controls.js"></script> 
 <script src="3jsbot_pd_control.js"></script> 
 <script src="3jsbot_inverse_kinematics.js"></script> 
-<script src="3jsbot_rrt_connect.js"></script> 
 <script src="3jsbot_quaternion.js"></script> 
 <script src="3jsbot_threejs.js"></script> 
 <script src="3jsbot_userinput.js"></script> 
+
+<script src="3jsbot_rrt_connect.js"></script> 
+<script src="3jsbot_collision.js"></script> 
+<script src="worlds/world_basic.js"></script>
+<!--
+<script src="worlds/world_empty.js"></script>
+<script src="worlds/world_random.js"></script>
+<script src="worlds/world_local_minima.js"></script>
+<script src="worlds/world_s.js"></script>
+-->
 
 <script>
 
@@ -134,6 +143,10 @@ function init_robot() {
 
     // initialize inverse kinematics target location 
     ik_target = [[0],[0.8],[1.0],[1]];
+
+    // initialize flags for executing planner
+    generating_motion_plan = false;
+    generate_motion_plan = false;
 
 }
 
@@ -218,95 +231,20 @@ function init_robot_joints() {
 // CS148: my_animate is where your robot's controls and movement are updated over time
 function my_animate() {
 
-    // // CS148: INITIAL GETTING FAMILIAR CODE  (START HERE)
-
-    // // // keyboard is threejs helper for reading keyboard state
-    // // if (keyboard.pressed("x")) 
-    // //     textbar.innerHTML = "moving up";  // make the pieces move up
-    // // else if (keyboard.pressed("z")) 
-    // //     textbar.innerHTML = "zzzzzz";  // stop jittering the pieces
-    // // else {
-    // //     // make the pieces jitter, and say something interesting
-    // // }
-
-    // // jsmat will be used to transform a 3D object to a specific location in the world
-    // // we will represent matrices with index notation 
-    // //   such that matrix[row][column] is the indexing
-    // var jsmat = [
-    //             [1, 0, 0, 0],
-    //             [0, 1, 0, 0],
-    //             [0, 0, 1, 0],
-    //             [0, 0, 0, 1] 
-    // ];
-
-    // var spacing = 0.9;  // variables declared with "var" are local 
-
-    // // jsmat[0][3] corresponds to the x-coordinate of the position for the 3D object
-    // // Object.key(object) is a rough way to get number of keys in an object
-    // jsmat[0][3] = -Object.keys(robot.joints).length*spacing/2;  
-
-
-    // // // iterate over each joint of the robot independently
-    // // for (x in robot.joints) {
-
-    // //     // // jsmat[1][3] corresponds to the y-coordinate of the position for the 3D object
-    // //     // jsmat[1][3] = 2+Math.random()*0.02;  // Math object has lots of helpful functions
-
-    // //     // // jsmat[2][3] corresponds to the z-coordinate of the position for the 3D object
-    // //     // jsmat[2][3] = Math.random()*0.02;
-
-    // //     // convert 2D JavaScript array to the threejs format
-    // //     threemat = matrix_2Darray_to_threejs(jsmat); 
-
-    // //     // transform 
-    // //     simpleApplyMatrix(robot.joints[x].geom,threemat);
-
-    // //     jsmat[0][3] += spacing;
-    // //     if (keyboard.pressed("x")) {
-    // //     	textbar.innerHTML = "movin' on up";  // make the pieces move up
-    // //     	jsmat[1][3] = 4;
-    // //     }
-    // // 	else if (keyboard.pressed("z")) {
-    // //     	textbar.innerHTML = "zzzzzz";  // stop jittering the pieces
-    // //     	jsmat[1][3] = 2;
-    // //     }
-	   // //  else {
-	   // //  	textbar.innerHTML = "jitterbug";
-	   // //  	jsmat[1][3] = 2+Math.random()*0.02;
-    // //     	jsmat[2][3] = Math.random()*0.02;
-	   // //      // make the pieces jitter, and say something interesting
-	   // //  }
-	   // //  // convert 2D JavaScript array to the threejs format
-	   // //  threemat = matrix_2Darray_to_threejs(jsmat); 
-
-    // //     // transform 
-    // //     simpleApplyMatrix(robot.joints[x].geom,threemat);
-    // // } 
-
-    // // iterate over each link of the robot independently
-    // // jsmat[0][3] = -Object.keys(robot.joints).length*spacing/2;
-    // // for (x in robot.links) {
-    // //     threemat = matrix_2Darray_to_threejs(jsmat);
-    // //     simpleApplyMatrix(robot.links[x].geom,threemat);
-    // //     if (keyboard.pressed("x")) {
-    // //     	textbar.innerHTML = "movin' on up";  // make the pieces move up
-    // //     	jsmat[1][3] = 3;
-    // //     }
-    // // 	else if (keyboard.pressed("z")) {
-    // //     	textbar.innerHTML = "zzzzzz";  // stop jittering the pieces
-    // //     	jsmat[1][3] = 1;
-    // //     }
-	   // //  else {
-	   // //  	textbar.innerHTML = "jitterbug";
-	   // //  	jsmat[1][3] = 1+Math.random()*0.02;
-    // //     	jsmat[2][3] = Math.random()*0.02;
-	   // //      // make the pieces jitter, and say something interesting
-	   // //  }
-    // //     jsmat[0][3] += spacing;
-    // // } 
-
-
-    // // CS148: INITIAL GETTING FAMILIAR CODE  (END)
+   // configuration space motion planning
+    if ((generate_motion_plan) && (!generating_motion_plan)) {
+        robot_rrt_planner_init();
+        generating_motion_plan = true;
+        generate_motion_plan = false;
+    }
+    if (generating_motion_plan) {
+        //robot_rrt_connect(q_desired);
+        rrt_result = robot_rrt_planner_iterate();
+        if (rrt_result === "reached") {
+            //alert("home: reached");
+            generating_motion_plan = false;
+        }
+    }
 
  
     // ROBOT DYNAMICS 
