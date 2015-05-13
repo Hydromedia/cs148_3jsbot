@@ -12,18 +12,24 @@
  
  Assignment 3: CANCELLED
  
- Assignment 4: DUE
+ Assignment 4: CHECK
  error: robot does not display properly for all test cases
  console: TypeError: robot.links[robot.joints[p].parent].children is undefined
+ regrade: working
  
- Assignment 5: DUE
+ Assignment 5: CHECK
+ error: branch not found
+ regrade: working
+ 
+ Assignment 6: CHECK
+ error: branch not found
+ regrade: working
+ 
+ Assignment 7: DUE
  error: branch not found
  
- Assignment 6: DUE
- error: branch not found
+ Assignment 8: CHECK
  
- Assignment 7: PENDING
- 
- Assignment 8: PENDING
+ Current grade: B (6/7 assignments completed)
  
 
