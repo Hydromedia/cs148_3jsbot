@@ -48,7 +48,7 @@ function print_array (C) {
 
 console.log("Empty Test");
 console.log(generate_empty(4, 6));
-function generate_empty(height, width){
+function generate_empty(height, width) {
 	var resultMatrix = new Array(height);
 	for (i = 0; i < height; i++) {
 		resultMatrix[i] = new Array(width);

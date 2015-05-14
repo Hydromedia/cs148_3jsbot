@@ -93,11 +93,12 @@ function robot_collision_test(q) {
 }
 
 
-function robot_collision_forward_kinematics (q) { 
+function robot_collision_forward_kinematics (q) {
 
     // transform robot base into the global world coordinates
-    var mstack = matrix_multiply(generate_translation_matrix(q[0],q[1],q[2]),matrix_multiply(matrix_multiply(generate_rotation_matrix_Z(q[5]),generate_rotation_matrix_Y(q[4])),generate_rotation_matrix_X(q[3])));
-
+    //console.log("1");
+    var mstack = matrix_multiply(generate_translation_matrix(q),matrix_multiply(matrix_multiply(generate_rotation_matrix_Z(q[5]),generate_rotation_matrix_Y(q[4])),generate_rotation_matrix_X(q[3])));
+    //console.log("2");
     // recurse kinematics, testing collisions at each link
     return traverse_collision_forward_kinematics_link(robot.links[robot.base],mstack,q);
 }
@@ -106,18 +107,17 @@ function robot_collision_forward_kinematics (q) {
 function traverse_collision_forward_kinematics_link(link,mstack,q) {
 
     // test collision by transforming obstacles in world to link space
-    mstack_inv = matrix_invert_affine(mstack);
-/*
+    //mstack_inv = matrix_invert_affine(mstack);
     mstack_inv = numeric.inv(mstack);
-*/
-
+    //console.log(mstack);
     var i;
     var j;
 
     // test each obstacle against link bbox geometry by transforming obstacle into link frame and testing against axis aligned bounding box
     for (j=0;j<robot_obstacles.length;j++) { 
-
-        var obstacle_local = matrix_multiply(mstack_inv,robot_obstacles[j].location);
+        //console.log("3");
+        var obstacle_local = matrix_multiply(mstack_inv, robot_obstacles[j].location);
+        //console.log("4");
 
         // assume link is in collision as default
         var in_collision = true; 
@@ -161,25 +161,76 @@ function traverse_collision_forward_kinematics_link(link,mstack,q) {
 
 
 function traverse_collision_forward_kinematics_joint(joint,mstack,q) {
-
-    var mstack_top = matrix_multiply(mstack,generate_identity());
+    //console.log("5");
+    var mstack_top = matrix_multiply(mstack,generate_identity(4));
+    //console.log("mstack_top");
+    //console.log(mstack_top);
+    //console.log("6");
 
     // compute matrix transform origin of joint in the local space of the parent link
-    var local_xform = matrix_multiply(generate_translation_matrix(joint.origin.xyz[0],joint.origin.xyz[1],joint.origin.xyz[2]),matrix_multiply(matrix_multiply(generate_rotation_matrix_Z(joint.origin.rpy[2]),generate_rotation_matrix_Y(joint.origin.rpy[1])),generate_rotation_matrix_X(joint.origin.rpy[0])));
+    //console.log("7");
+    var local_xform = matrix_multiply(generate_translation_matrix(joint.origin.xyz),
+                                      matrix_multiply(
+                                                        matrix_multiply(generate_rotation_matrix_Z(joint.origin.rpy[2]),generate_rotation_matrix_Y(joint.origin.rpy[1])),
+                                                                        generate_rotation_matrix_X(joint.origin.rpy[0])
+                                                        ) 
+                                      );
+    //console.log("local_xform");
+    //console.log(local_xform);
 
+    //console.log("0");
+
+    //console.log("1");
+    //console.log(generate_rotation_matrix_Z(joint.origin.rpy[2]));
+
+    //console.log("2");
+   // console.log(generate_rotation_matrix_Y(joint.origin.rpy[1]));
+
+    //console.log("3");
+    //console.log(generate_rotation_matrix_X(joint.origin.rpy[0]));
+
+    //console.log("4");
+    //console.log(matrix_multiply(matrix_multiply(generate_rotation_matrix_Z(joint.origin.rpy[2]),generate_rotation_matrix_Y(joint.origin.rpy[1])),generate_rotation_matrix_X(joint.origin.rpy[0])));
+    //console.log("8");
     // push local transform to origin to the top of the matrix stack
-    var mstack_origin_top = matrix_multiply(mstack,local_xform)
+    var mstack_origin_top = matrix_multiply(mstack,local_xform);
+    //console.log("mstack_origin_top");
+    //console.log(mstack_origin_top);
+    //console.log("9");
 
     // transform motor rotation by quaternion for axis-angle joint rotation
     var tempvec = [joint.axis[0],joint.axis[1],joint.axis[2]]; 
+    //console.log("tempvec");
+    //console.log(tempvec);
+    //console.log("10");
+
+    //console.log("q[q_names[joint.name]]");
+    //console.log(q[q_names[joint.name]]);
     var tempquat = quaternion_from_axisangle(tempvec,q[q_names[joint.name]]);
+    //console.log("tempquat");
+    if (isNaN(tempquat[0])) {
+        alert(tempquat +", tempvec: " + tempvec + ", qqname" +q[q_names[joint.name]]);
+    }
+    //console.log(tempquat);
+    //console.log("11");
     var joint_local_quat = quaternion_normalize(tempquat);
+    //console.log("joint_local_quat");
+    //console.log(joint_local_quat);
+    //console.log("12");
 
     // push joint angle transform to the top of the matrix stack
     var joint_local_xform = quaternion_to_rotation_matrix(joint_local_quat);
+    //console.log("joint_local_xform");
+    //console.log(joint_local_xform);
+    //console.log("13");
     var mstack_top = matrix_multiply(mstack_origin_top,joint_local_xform); 
+    //console.log("14");
 
-    // recursively traverse child link with the current_xform being top of matrix stack 
+    //recursively traverse child link with the current_xform being top of matrix stack 
+    if (isNaN(mstack_top[0][0])) {
+        console.log(mstack_top);
+        alert("gotcha: " + tempquat +", tempvec: " + tempvec + ", qqname" +q[q_names[joint.name]]);
+    }
     return traverse_collision_forward_kinematics_link(robot.links[joint.child],mstack_top,q);
 
 }

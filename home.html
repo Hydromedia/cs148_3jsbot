@@ -60,8 +60,9 @@
 
 <script src="3jsbot_rrt_connect.js"></script> 
 <script src="3jsbot_collision.js"></script> 
-<script src="worlds/world_basic.js"></script>
+<script src="worlds/world_s.js"></script>
 <!--
+<script src="worlds/world_basic.js"></script>
 <script src="worlds/world_empty.js"></script>
 <script src="worlds/world_random.js"></script>
 <script src="worlds/world_local_minima.js"></script>
@@ -148,6 +149,9 @@ function init_robot() {
     generating_motion_plan = false;
     generate_motion_plan = false;
 
+    // set scene for planner
+    robot_set_planning_scene();
+
 }
 
 // CS148: nothing to add here 
@@ -230,23 +234,27 @@ function init_robot_joints() {
 
 // CS148: my_animate is where your robot's controls and movement are updated over time
 function my_animate() {
-
+    //console.log("Checking col");
+    robot_iscollision();
+    
+    //console.log("Call from animate");
    // configuration space motion planning
     if ((generate_motion_plan) && (!generating_motion_plan)) {
+        //console.log("Call Init");
         robot_rrt_planner_init();
         generating_motion_plan = true;
         generate_motion_plan = false;
     }
     if (generating_motion_plan) {
         //robot_rrt_connect(q_desired);
+        //console.log("Call iterate");
         rrt_result = robot_rrt_planner_iterate();
-        if (rrt_result === "reached") {
+        if (rrt_result === "Reached") {
             //alert("home: reached");
             generating_motion_plan = false;
         }
     }
-
- 
+    //console.log("Done call from animate");
     // ROBOT DYNAMICS 
 
     // apply robot controls to robot configuration (assuming pure kinematics for now)
